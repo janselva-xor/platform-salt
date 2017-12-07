@@ -147,7 +147,8 @@ BLUEPRINT = r'''{
             "yarn-env" : {
                 "properties" : {
                     "yarn_log_dir_prefix" : "/var/log/pnda/hadoop-yarn",
-                    "resourcemanager_heapsize" : "1024"
+                    "resourcemanager_heapsize" : "1024", 
+                    "service_check.queue.name" : "system"
                 }
             }
         },
@@ -179,19 +180,19 @@ BLUEPRINT = r'''{
                     "yarn.scheduler.capacity.root.acl_administer_queue" : "yarn,hdfs hadoop",
                     "yarn.scheduler.capacity.root.application.minimum-user-limit-percent" : "100",
                     "yarn.scheduler.capacity.root.queues" : "application,system",
-                    "yarn.scheduler.capacity.root.application.dev.capacity" : "50",
+                    "yarn.scheduler.capacity.root.application.dev.capacity" : "0",
                     "yarn.scheduler.capacity.root.application.prod.acl_administer_queue" : "prod1 prod",
                     "yarn.scheduler.capacity.root.system.user-limit-factor" : "1",
                     "yarn.scheduler.capacity.maximum-applications" : "10000",
                     "yarn.scheduler.capacity.queue-mappings-override.enable" : "false",
                     "yarn.scheduler.capacity.root.system.priority" : "0",
-                    "yarn.scheduler.capacity.root.system.capacity" : "50",
+                    "yarn.scheduler.capacity.root.system.capacity" : "100",
                     "yarn.scheduler.capacity.root.application.prod.user-limit-factor" : "1",
                     "yarn.scheduler.capacity.root.system.maximum-capacity" : "100",
                     "yarn.scheduler.capacity.root.application.user-limit-factor" : "1",
                     "yarn.scheduler.capacity.root.application.state" : "RUNNING",
                     "yarn.scheduler.capacity.root.system.minimum-user-limit-percent" : "100",
-                    "yarn.scheduler.capacity.root.application.maximum-capacity" : "80",
+                    "yarn.scheduler.capacity.root.application.maximum-capacity" : "100",
                     "yarn.scheduler.capacity.root.system.state" : "RUNNING",
                     "yarn.scheduler.capacity.root.application.dev.acl_administer_queue" : "dev1 dev",
                     "yarn.scheduler.capacity.root.application.acl_submit_applications" : " ",
@@ -207,14 +208,14 @@ BLUEPRINT = r'''{
                     "yarn.scheduler.capacity.root.application.prod.maximum-capacity" : "100",
                     "yarn.scheduler.capacity.root.application.queues" : "dev,prod",
                     "yarn.scheduler.capacity.root.accessible-node-labels" : "*",
-                    "yarn.scheduler.capacity.root.application.dev.maximum-capacity" : "50",
+                    "yarn.scheduler.capacity.root.application.dev.maximum-capacity" : "100",
                     "yarn.scheduler.capacity.root.application.prod.priority" : "0",
                     "yarn.scheduler.capacity.root.priority" : "0",
                     "yarn.scheduler.capacity.root.application.prod.minimum-user-limit-percent" : "100",
-                    "yarn.scheduler.capacity.root.application.prod.capacity" : "50",
+                    "yarn.scheduler.capacity.root.application.prod.capacity" : "100",
                     "yarn.scheduler.capacity.root.capacity" : "100",
                     "yarn.scheduler.capacity.node-locality-delay" : "40",
-                    "yarn.scheduler.capacity.root.application.capacity" : "50",
+                    "yarn.scheduler.capacity.root.application.capacity" : "0",
                     "yarn.scheduler.capacity.root.system.acl_administer_queue" : "pnda ",
                     "yarn.scheduler.capacity.root.application.priority" : "0"
                 }
@@ -340,6 +341,13 @@ BLUEPRINT = r'''{
                     "dfs.replication" : "3",
                     "dfs.replication.max" : "50",
                     "dfs.datanode.data.dir" : "{{ data_volumes }}"
+                }
+            }
+        },
+        {
+            "webhcat-site" : {
+                "properties" : {
+                    "templeton.hadoop.queue.name" : "system"
                 }
             }
         },
