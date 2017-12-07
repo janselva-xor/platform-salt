@@ -11,7 +11,7 @@ job.group=PNDA
 job.description=Pulls data from all kafka topics to HDFS
 
 mr.job.max.mappers={{ max_mappers }}
-mapreduce.job.queuename=root.system 
+mapreduce.job.queuename=system 
 
 # ==== Kafka Source ====
 source.class=gobblin.source.extractor.extract.kafka.KafkaSimpleSource
