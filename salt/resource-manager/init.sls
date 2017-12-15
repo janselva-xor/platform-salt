@@ -45,6 +45,12 @@ resource-manager_spark_shell:
     - target: {{ resource_manager_dir }}/spark-common-wrapper.sh
     - mode: 755
 
+resource-manager_pyspark:
+  file.symlink:
+    - name: {{ resource_manager_dir }}/pyspark
+    - target: {{ resource_manager_dir }}/spark-common-wrapper.sh
+    - mode: 755
+
 resource-manager_spark_submit_move:
   file.rename:
     - name: /opt/pnda/spark/spark-submit
@@ -60,6 +66,14 @@ resource-manager_spark_shell_move:
     - makedirs: True
     - unless: 
       - test -L /usr/bin/spark-shell
+
+resource-manager_pyspark_move:
+  file.rename:
+    - name: /opt/pnda/spark/pyspark
+    - source: /usr/bin/pyspark
+    - makedirs: True
+    - unless: 
+      - test -L /usr/bin/pyspark
 
 resource-manager_spark_script_move:
   file.rename:
@@ -87,6 +101,15 @@ resource-manager_spark_shell_orig:
     - onlyif:
       - test -x /opt/pnda/spark/spark-shell
 
+resource-manager_pyspark_orig:
+  alternatives.install:
+    - name: pyspark
+    - link: /usr/bin/pyspark
+    - path: /opt/pnda/spark/pyspark
+    - priority: 10
+    - onlyif:
+      - test -x /opt/pnda/spark/pyspark
+
 resource-manager_spark_submit_wrapper:
   alternatives.install:
     - name: spark-submit
@@ -99,6 +122,13 @@ resource-manager_spark_shell_wrapper:
     - name: spark-shell
     - link: /usr/bin/spark-shell
     - path: {{ resource_manager_dir }}/spark-shell
+    - priority: 100
+
+resource-manager_pyspark_wrapper:
+  alternatives.install:
+    - name: pyspark
+    - link: /usr/bin/pyspark
+    - path: {{ resource_manager_dir }}/pyspark
     - priority: 100
 
 

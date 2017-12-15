@@ -50,6 +50,6 @@ while read member queue; do
 done < $MAP
 
 # Overwrite any queue setting
-KEEP+=("--queue" "$TARGET")
+KEEP=("--queue" "$TARGET" "${KEEP[@]}")
 set -- "${KEEP[@]}"
 echo "-------Starting with ${KEEP[@]}"

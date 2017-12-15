@@ -5,14 +5,13 @@
 {% set app_packages_home = pnda_home_directory + '/app-packages' %}
 {% set jupyter_extension_venv = pnda_home_directory + '/jupyter-extensions' %}
 {% set pnda_user  = pillar['pnda']['user'] %}
+{% set spark_bin_path = '/usr/' %}
 
 {% if grains['hadoop.distro'] == 'HDP' %}
 {% set anaconda_home = '/opt/pnda/anaconda' %}
-{% set spark_home = '/usr/hdp/current/spark-client' %}
 {% set hadoop_conf_dir = '/etc/hadoop/conf' %}
 {% else %}
 {% set anaconda_home = '/opt/cloudera/parcels/Anaconda' %}
-{% set spark_home = '/opt/cloudera/parcels/CDH/lib/spark' %}
 {% set hadoop_conf_dir = '/etc/hadoop/conf.cloudera.yarn01' %}
 {% endif %}
 
@@ -81,7 +80,7 @@ jupyter-copy_pyspark_kernel:
       - file: jupyter-create_pyspark_kernel_dir
     - defaults:
         anaconda_home: {{ anaconda_home }}
-        spark_home: {{ spark_home }}
+        spark_home: {{ spark_bin_path }}
         hadoop_conf_dir: {{ hadoop_conf_dir }}
         app_packages_home: {{ app_packages_home }}
         jupyter_extension_venv: {{ jupyter_extension_venv }}
