@@ -30,9 +30,15 @@ glibc-devel:
   version: ""
 grafana:
   package-source: 'grafana_4.2.0_amd64.deb'
+libkrb5-dev:
+  package-name: libkrb5-dev
+  version:  ""
 libmysql-java:
   package-name: libmysql-java
   version: "5.1.28-1"
+libpq-dev:
+  package-name: libpq-dev
+  version: ""
 libssl-dev:
   package-name: libssl-dev
   version: ""
@@ -64,6 +70,9 @@ ntp:
 opentsdb:
   package-source: 'opentsdb-2.3.0_all.deb'
   bind_port: 4242
+pam-devel:
+  package-name: libpam0g-dev
+  version: ""
 patch:
   package-name: patch
   version: ""

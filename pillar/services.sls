@@ -55,7 +55,7 @@ jupyterproxy:
   release_version: 1.3.1
 
 gobblin:
-  release_version: develop
+  release_version: 0.11.0
 
 console_frontend:
   release_version: develop
@@ -114,3 +114,9 @@ hadoop_manager:
     user: scm
     password: scm
     database: scm
+
+livy:
+  release_version: "0.3.0"
+
+nodejs:
+  version: 'node-v6.10.2-linux-x64'

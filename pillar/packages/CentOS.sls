@@ -34,6 +34,9 @@ cyrus-sasl-plain:
 g++:
   package-name: gcc-c++
   version: ""
+gcc:
+  package-name: gcc
+  version: ""
 glibc-devel:
   package-name: glibc-devel
   version: ""
@@ -42,6 +45,9 @@ gnuplot:
   version: ""
 grafana:
   package-source: 'grafana-4.2.0-1.x86_64.rpm'
+krb5-devel:
+  package-name: krb5-devel
+  version: ""
 libssl-dev:
   package-name: openssl-devel
   version: ""
@@ -79,8 +85,14 @@ ntp:
 opentsdb:
   package-source: 'opentsdb-2.3.0.rpm'
   bind_port: 4242
+pam-devel:
+  package-name: pam-devel
+  version: ""
 patch:
   package-name: patch
+  version: ""
+postgresql-devel:
+  package-name: postgresql-devel
   version: ""
 python-pip:
   package-name: python2-pip
