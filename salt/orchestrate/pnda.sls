@@ -246,19 +246,19 @@ orchestrate-pnda-app-packages:
     - timeout: 120
     - queue: True
 
-orchestrate-pnda-app-packages-hdfs-sync:
-  salt.state:
-    - tgt: 'G@pnda_cluster:{{pnda_cluster}} and G@roles:hadoop_edge'
-    - tgt_type: compound
-    - sls: app-packages.hdfs-sync
-    - timeout: 120
-    - queue: True
-
 orchestrate-pnda-install_remove_new_node_markers:
   salt.state:
     - tgt: 'G@pnda_cluster:{{pnda_cluster}}'
     - tgt_type: compound
     - sls: orchestrate.remove_new_node_marker
+    - timeout: 120
+    - queue: True
+
+orchestrate-pnda-app-packages-hdfs-sync:
+  salt.state:
+    - tgt: 'G@pnda_cluster:{{pnda_cluster}} and G@roles:hadoop_edge'
+    - tgt_type: compound
+    - sls: app-packages.hdfs-sync
     - timeout: 120
     - queue: True
 
@@ -270,3 +270,18 @@ orchestrate-pnda-initial_gobblin_run:
     - timeout: 120
     - queue: True
 
+orchestrate-saltstack_minion_config:
+  salt.state:
+    - tgt: '*'
+    - tgt_type: compound
+    - sls: config
+    - timeout: 120
+    - queue: True
+
+orchestrate-pnda_vm_reboot:
+  salt.state:
+    - tgt: '*'
+    - tgt_type: compound
+    - sls: reboot.kernel_reboot
+    - timeout: 120
+    - queue: True
