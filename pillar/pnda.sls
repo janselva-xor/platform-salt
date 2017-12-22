@@ -9,3 +9,9 @@ pnda:
     directory: /user/pnda/PNDA_datasets/datasets
     quarantine_directory: /user/pnda/PNDA_datasets/quarantine
     bulk_directory: /user/pnda/PNDA_datasets/bulk
+    staging_directory: /user/pnda/PNDA_datasets/staging
+
+  dataset_compaction:
+    compaction: True
+    pattern: d
+    retention_mode: delete
