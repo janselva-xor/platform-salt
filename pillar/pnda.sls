@@ -15,3 +15,6 @@ pnda:
     compaction: True
     pattern: d
     retention_mode: delete
+
+  app_packages:
+    app_packages_hdfs_path: /pnda/deployment/app_packages

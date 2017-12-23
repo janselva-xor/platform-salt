@@ -35,7 +35,7 @@
 
 {% set gobblin_hdfs_work_dir = '/user/' + pnda_user + '/gobblin/work' %}
 
-{% if pillar['hadoop.distro'] == 'HDP' %}
+{% if grains['hadoop.distro'] == 'HDP' %}
 {% set hadoop_home_bin = '/usr/hdp/current/hadoop-client/bin/' %}
 {% else %}
 {% set hadoop_home_bin = '/opt/cloudera/parcels/CDH/bin' %}
@@ -52,7 +52,7 @@ gobblin-dl-and-extract:
     - source: {{ packages_server }}/{{ gobblin_package }}
     - source_hash: {{ packages_server }}/{{ gobblin_package }}.sha512.txt
     - archive_format: tar
-    - tar_options: v
+    - tar_options: ''
     - if_missing: {{ gobblin_real_dir }}/gobblin-dist
     - require:
       - file: gobblin-create_gobblin_version_directory
@@ -69,6 +69,14 @@ gobblin-update_gobblin_reference_configuration_file:
     - name: {{ gobblin_real_dir }}/gobblin-dist/conf/gobblin-mapreduce.properties
     - pattern: '^fs.uri=hdfs://localhost:8020$'
     - repl: 'fs.uri={{ namenode }}'
+    - require:
+      - archive: gobblin-dl-and-extract
+
+gobblin-update_gobblin_mapreduce_sh_file:
+  file.replace:
+    - name: {{ gobblin_real_dir }}/gobblin-dist/bin/gobblin-mapreduce.sh
+    - pattern: 'data-2.6.0.jar'
+    - repl: 'data-11.0.0.jar'
     - require:
       - archive: gobblin-dl-and-extract
 
@@ -109,6 +117,7 @@ gobblin-install_gobblin_pnda_compaction_job_file:
 gobblin-create_gobblin_logs_directory:
   file.directory:
     - name: /var/log/pnda/gobblin
+    - user: {{ pnda_user }}
     - makedirs: True
 
 gobblin-install_gobblin_pull_service_script:
@@ -116,7 +125,7 @@ gobblin-install_gobblin_pull_service_script:
 {% if grains['os'] == 'Ubuntu' %}
     - name: /etc/init/gobblin_pull.conf
     - source: salt://gobblin/templates/gobblin_pull.conf.tpl
-{% elif grains['os'] == 'RedHat' %}
+{% elif grains['os'] in ('RedHat', 'CentOS')' %}
     - name: /usr/lib/systemd/system/gobblin_pull.service
     - source: salt://gobblin/templates/gobblin_pull.service.tpl
 {%- endif %}
@@ -127,6 +136,13 @@ gobblin-install_gobblin_pull_service_script:
       gobblin_work_dir: {{ gobblin_hdfs_work_dir }}
       gobblin_job_file: {{ gobblin_link_dir }}/configs/mr.pull
       hadoop_home_bin: {{ hadoop_home_bin }}
+      
+gobblin-create_gobblin_logs_file:
+  file.managed:
+    - name: /var/log/pnda/gobblin/gobblin-current.log
+    - user: pnda
+    - group: pnda
+    - mode: 0644
 
 {% if perform_compaction %}
 gobblin-install_gobblin_compact_service_script:
@@ -134,7 +150,7 @@ gobblin-install_gobblin_compact_service_script:
 {% if grains['os'] == 'Ubuntu' %}
     - name: /etc/init/gobblin_compact.conf
     - source: salt://gobblin/templates/gobblin_compact.conf.tpl
-{% elif grains['os'] == 'RedHat' %}
+{% if grains['os'] in ('RedHat', 'CentOS') %}
     - name: /usr/lib/systemd/system/gobblin_compact.service
     - source: salt://gobblin/templates/gobblin_compact.service.tpl
 {%- endif %}
@@ -147,7 +163,7 @@ gobblin-install_gobblin_compact_service_script:
       hadoop_home_bin: {{ hadoop_home_bin }}
 {%- endif %}
 
-{% if grains['os'] == 'RedHat' %}
+{% if grains['os'] in ('RedHat', 'CentOS') %}
 gobblin-systemctl_reload:
   cmd.run:
     - name: /bin/systemctl daemon-reload
@@ -158,7 +174,7 @@ gobblin-add_gobblin_pull_crontab_entry:
     - identifier: GOBBLIN_PULL
 {% if grains['os'] == 'Ubuntu' %}
     - name: /sbin/start gobblin_pull
-{% elif grains['os'] == 'RedHat' %}
+{% elif grains['os'] in ('RedHat', 'CentOS') %}
     - name: /bin/systemctl start gobblin_pull
 {%- endif %}
     - user: root
