@@ -27,7 +27,7 @@ job.group=PNDA
 
 mr.job.max.mappers={{ max_mappers }}
 
-compaction.datasets.finder=org.apache.gobblin.compaction.dataset.TimeBasedSubDirDatasetsFinder
+compaction.datasets.finder=gobblin.compaction.dataset.TimeBasedSubDirDatasetsFinder
 compaction.input.dir={{ staging_dataset_location }}
 compaction.dest.dir={{ master_dataset_location }}
 compaction.input.subdir=.
@@ -37,8 +37,8 @@ compaction.timebased.max.time.ago={{ time_ago }}
 compaction.timebased.min.time.ago=1h
 compaction.input.deduplicated=false
 compaction.output.deduplicated=false
-compaction.jobprops.creator.class=org.apache.gobblin.compaction.mapreduce.MRCompactorTimeBasedJobPropCreator
-compaction.job.runner.class=org.apache.gobblin.compaction.mapreduce.avro.MRCompactorAvroKeyDedupJobRunner
+compaction.jobprops.creator.class=gobblin.compaction.mapreduce.MRCompactorTimeBasedJobPropCreator
+compaction.job.runner.class=gobblin.compaction.mapreduce.avro.MRCompactorAvroKeyDedupJobRunner
 compaction.timezone=UTC
 compaction.job.overwrite.output.dir=true
 compaction.recompact.from.input.for.late.data=true
