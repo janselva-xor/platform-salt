@@ -125,7 +125,7 @@ gobblin-install_gobblin_pull_service_script:
 {% if grains['os'] == 'Ubuntu' %}
     - name: /etc/init/gobblin_pull.conf
     - source: salt://gobblin/templates/gobblin_pull.conf.tpl
-{% elif grains['os'] in ('RedHat', 'CentOS')' %}
+{% elif grains['os'] in ('RedHat', 'CentOS') %}
     - name: /usr/lib/systemd/system/gobblin_pull.service
     - source: salt://gobblin/templates/gobblin_pull.service.tpl
 {%- endif %}
@@ -150,7 +150,7 @@ gobblin-install_gobblin_compact_service_script:
 {% if grains['os'] == 'Ubuntu' %}
     - name: /etc/init/gobblin_compact.conf
     - source: salt://gobblin/templates/gobblin_compact.conf.tpl
-{% if grains['os'] in ('RedHat', 'CentOS') %}
+{% elif grains['os'] in ('RedHat', 'CentOS') %}
     - name: /usr/lib/systemd/system/gobblin_compact.service
     - source: salt://gobblin/templates/gobblin_compact.service.tpl
 {%- endif %}
