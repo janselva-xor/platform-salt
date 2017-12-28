@@ -11,10 +11,5 @@ pnda:
     bulk_directory: /user/pnda/PNDA_datasets/bulk
     staging_directory: /user/pnda/PNDA_datasets/staging
 
-  dataset_compaction:
-    compaction: True
-    pattern: d
-    retention_mode: delete
-
   app_packages:
     app_packages_hdfs_path: /pnda/deployment/app_packages

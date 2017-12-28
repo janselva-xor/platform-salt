@@ -24,10 +24,10 @@
 
 {% set pnda_staging_dataset_location = pillar['pnda']['master_dataset']['staging_directory'] %}
 {% set pnda_kite_staging_dataset_uri = "dataset:" + namenode + pnda_staging_dataset_location %}
-{% set perform_compaction = pillar['pnda']['dataset_compaction']['compaction'] %}
+{% set perform_compaction = salt['pillar.get']('dataset_compaction:compaction', False) %}
 
 {% if perform_compaction %}
-{% set compaction_pattern = pillar['pnda']['dataset_compaction']['pattern'] %}
+{% set compaction_pattern = salt['pillar.get']('dataset_compaction:pattern', 'd') %}
 {% set pnda_primary_dataset_uri = pnda_kite_staging_dataset_uri %}
 {% else %}
 {% set pnda_primary_dataset_uri = pnda_kite_dataset_uri %}
@@ -120,14 +120,14 @@ gobblin-create_gobblin_logs_directory:
     - user: {{ pnda_user }}
     - makedirs: True
 
-gobblin-install_gobblin_pull_service_script:
+gobblin-install_gobblin_service_script:
   file.managed:
 {% if grains['os'] == 'Ubuntu' %}
-    - name: /etc/init/gobblin_pull.conf
-    - source: salt://gobblin/templates/gobblin_pull.conf.tpl
+    - name: /etc/init/gobblin.conf
+    - source: salt://gobblin/templates/gobblin.conf.tpl
 {% elif grains['os'] in ('RedHat', 'CentOS') %}
-    - name: /usr/lib/systemd/system/gobblin_pull.service
-    - source: salt://gobblin/templates/gobblin_pull.service.tpl
+    - name: /usr/lib/systemd/system/gobblin.service
+    - source: salt://gobblin/templates/gobblin.service.tpl
 {%- endif %}
     - template: jinja
     - context:
@@ -169,18 +169,18 @@ gobblin-systemctl_reload:
     - name: /bin/systemctl daemon-reload
 {%- endif %}
 
-gobblin-add_gobblin_pull_crontab_entry:
+gobblin-add_gobblin_crontab_entry:
   cron.present:
-    - identifier: GOBBLIN_PULL
+    - identifier: GOBBLIN
 {% if grains['os'] == 'Ubuntu' %}
-    - name: /sbin/start gobblin_pull
+    - name: /sbin/start gobblin
 {% elif grains['os'] in ('RedHat', 'CentOS') %}
-    - name: /bin/systemctl start gobblin_pull
+    - name: /bin/systemctl start gobblin
 {%- endif %}
     - user: root
     - minute: 0,30
     - require:
-      - file: gobblin-install_gobblin_pull_service_script
+      - file: gobblin-install_gobblin_service_script
 
 {% if perform_compaction %}
 gobblin-add_gobblin_compact_crontab_entry:

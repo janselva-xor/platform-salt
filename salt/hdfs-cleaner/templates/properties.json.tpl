@@ -6,10 +6,10 @@
 {%- set cm_node_ip = cm_node|join(" ") %}
 {%- set cm_username = pillar['admin_login']['user'] %}
 {%- set cm_password = pillar['admin_login']['password'] %}
-{%- set perform_compaction = pillar['pnda']['dataset_compaction']['compaction'] %}
+{%- set perform_compaction = salt['pillar.get']('dataset_compaction:compaction', False) %}
 
 {%- if perform_compaction %}
-{%- set compaction_pattern = pillar['pnda']['dataset_compaction']['pattern'] %}
+{%- set compaction_pattern = salt['pillar.get']('dataset_compaction:pattern', 'd') %}
 {%- if compaction_pattern == 'H' %}
 {%- set age = 1 %}
 {%- elif compaction_pattern == 'd' %}
@@ -20,7 +20,7 @@
 {%- set age = 367 %}
 {%- endif %}
 {%- set pnda_dataset_staging_location =  pillar['pnda']['master_dataset']['staging_directory'] %}
-{%- set pnda_dataset_staging_retention_mode =  pillar['pnda']['dataset_compaction']['retention_mode'] %}
+{%- set pnda_dataset_staging_retention_mode =  salt['pillar.get']('dataset_compaction:retention_mode', 'delete') %}
 {%- endif %}
 {
     "hadoop_distro":"{{ hadoop_distro }}",
