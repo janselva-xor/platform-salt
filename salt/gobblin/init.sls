@@ -24,10 +24,10 @@
 
 {% set pnda_staging_dataset_location = pillar['pnda']['master_dataset']['staging_directory'] %}
 {% set pnda_kite_staging_dataset_uri = "dataset:" + namenode + pnda_staging_dataset_location %}
-{% set perform_compaction = pillar['pnda']['dataset_compaction']['compaction'] %}
+{% set perform_compaction = salt['pillar.get']('dataset_compaction:compaction', False) %}
 
 {% if perform_compaction %}
-{% set compaction_pattern = pillar['pnda']['dataset_compaction']['pattern'] %}
+{% set compaction_pattern = salt['pillar.get']('dataset_compaction:pattern', 'd') %}
 {% set pnda_primary_dataset_uri = pnda_kite_staging_dataset_uri %}
 {% else %}
 {% set pnda_primary_dataset_uri = pnda_kite_dataset_uri %}
