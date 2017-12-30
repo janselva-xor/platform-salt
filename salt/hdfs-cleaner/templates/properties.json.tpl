@@ -35,7 +35,7 @@
         {"name": "{{ gobblin_work_dir }}/state-store/PullFromKafkaMR", "age_seconds": 172800}
     ],
 {% if perform_compaction %}
-    "staging_dataset_to clean":{
+    "staging_dataset_to_clean":{
         "staging_dataset_location": "{{ pnda_dataset_staging_location }}",
         "mode": "{{ pnda_dataset_staging_retention_mode }}",
         "age": {{ age }}
