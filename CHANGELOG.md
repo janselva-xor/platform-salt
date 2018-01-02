@@ -13,6 +13,8 @@ All notable changes to this project will be documented in this file.
 - PNDA-3528: Add some pillars for the resource manager and used in the dm-config.
 - PNDA-2834: Actual application status by deployment manager
 - PNDA-1322: Test Master Dataset Health.
+- PNDA-3133: Remove Gobblin fork and use release distribution instead.
+
 ### Changed
 - PNDA-3545: Configure Hive and Hive2 Ambari views to run as the hdfs super user
 - PNDA-3555: Use /pnda/deployment as HDFS library location
