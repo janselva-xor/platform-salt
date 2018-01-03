@@ -24,10 +24,10 @@
 
 {% set pnda_staging_dataset_location = pillar['pnda']['master_dataset']['staging_directory'] %}
 {% set pnda_kite_staging_dataset_uri = "dataset:" + namenode + pnda_staging_dataset_location %}
-{% set perform_compaction = pillar['pnda']['dataset_compaction']['compaction'] %}
+{% set perform_compaction = salt['pillar.get']('dataset_compaction:compaction', False) %}
 
 {% if perform_compaction %}
-{% set compaction_pattern = pillar['pnda']['dataset_compaction']['pattern'] %}
+{% set compaction_pattern = salt['pillar.get']('dataset_compaction:pattern', 'd') %}
 {% set pnda_primary_dataset_uri = pnda_kite_staging_dataset_uri %}
 {% else %}
 {% set pnda_primary_dataset_uri = pnda_kite_dataset_uri %}
@@ -163,6 +163,25 @@ gobblin-install_gobblin_compact_service_script:
       hadoop_home_bin: {{ hadoop_home_bin }}
 {%- endif %}
 
+{% if perform_compaction %}
+gobblin-install_gobblin_compact_service_script:
+  file.managed:
+{% if grains['os'] == 'Ubuntu' %}
+    - name: /etc/init/gobblin-compact.conf
+    - source: salt://gobblin/templates/gobblin-compact.conf.tpl
+{% elif grains['os'] in ('RedHat', 'CentOS') %}
+    - name: /usr/lib/systemd/system/gobblin-compact.service
+    - source: salt://gobblin/templates/gobblin-compact.service.tpl
+{%- endif %}
+    - template: jinja
+    - context:
+      gobblin_directory_name: {{ gobblin_link_dir }}/gobblin-dist
+      gobblin_user: {{ pnda_user }}
+      gobblin_work_dir: {{ gobblin_hdfs_work_dir }}
+      gobblin_job_file: {{ gobblin_link_dir }}/configs/mr.compact
+      hadoop_home_bin: {{ hadoop_home_bin }}
+{%- endif %}
+
 {% if grains['os'] in ('RedHat', 'CentOS') %}
 gobblin-systemctl_reload:
   cmd.run:
@@ -180,16 +199,16 @@ gobblin-add_gobblin_pull_crontab_entry:
     - user: root
     - minute: 0,30
     - require:
-      - file: gobblin-install_gobblin_pull_service_script
+      - file: gobblin-install_gobblin_service_script
 
 {% if perform_compaction %}
 gobblin-add_gobblin_compact_crontab_entry:
   cron.present:
-    - identifier: GOBBLIN_COMPACT
+    - identifier: GOBBLIN-COMPACT
 {% if grains['os'] == 'Ubuntu' %}
-    - name: /sbin/start gobblin_compact
+    - name: /sbin/start gobblin-compact
 {% elif grains['os'] == 'RedHat' %}
-    - name: /bin/systemctl start gobblin_compact
+    - name: /bin/systemctl start gobblin-compact
 {%- endif %}
     - user: root
 {% if compaction_pattern == 'H' %}
