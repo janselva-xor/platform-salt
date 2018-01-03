@@ -144,13 +144,6 @@ gobblin-install_gobblin_pull_service_script:
       gobblin_job_file: {{ gobblin_link_dir }}/configs/mr.pull
       hadoop_home_bin: {{ hadoop_home_bin }}
       
-gobblin-create_gobblin_logs_file:
-  file.managed:
-    - name: /var/log/pnda/gobblin/gobblin-current.log
-    - user: pnda
-    - group: pnda
-    - mode: 0644
-
 {% if perform_compaction %}
 gobblin-install_gobblin_compact_service_script:
   file.managed:
