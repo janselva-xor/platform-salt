@@ -74,7 +74,7 @@ master-dataset-update_PNDA_master_kite_dataset_perms:
     - onchanges:
       - cmd: master-dataset-create_PNDA_master_kite_dataset
 
-{%if pillar['pnda']['dataset_compaction']['compaction'] %}
+{%if salt['pillar.get']('dataset_compaction:compaction', False) %}
 master-dataset-create_PNDA_staging_kite_dataset:
   cmd.run:
     - name: kite-dataset create --schema /tmp/pnda.avsc {{ pnda_kite_staging_dataset_uri }} --partition-by /tmp/pnda_kite_partition.json

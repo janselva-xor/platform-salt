@@ -3,7 +3,7 @@
 ###################### Gobblin Compaction Job configurations ##################
 ###############################################################################
 
-{%- set compaction_pattern = pillar['pnda']['dataset_compaction']['pattern'] %}
+{%- set compaction_pattern = salt['pillar.get']('dataset_compaction:pattern', 'd') %}
 {%- if compaction_pattern == 'H' %}
 {%- set folder_pattern="'year='YYYY/'month='MM/'day='dd/'hour='HH" %}
 {%- set time_ago='1d' %}
