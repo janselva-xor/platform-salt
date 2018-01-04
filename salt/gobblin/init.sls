@@ -85,7 +85,7 @@ gobblin-create_gobblin_jobs_directory:
     - name: {{ gobblin_link_dir }}/configs
     - makedirs: True
 
-gobblin-install_gobblin_pnda_pull_job_file:
+gobblin-install_gobblin_pnda_job_file:
   file.managed:
     - name: {{ gobblin_link_dir }}/configs/mr.pull
     - source: salt://gobblin/templates/mr.pull.tpl
@@ -127,14 +127,14 @@ gobblin-create_gobblin_logs_file:
     - group: pnda
     - mode: 0644
 
-gobblin-install_gobblin_pull_service_script:
+gobblin-install_gobblin_service_script:
   file.managed:
 {% if grains['os'] == 'Ubuntu' %}
-    - name: /etc/init/gobblin_pull.conf
-    - source: salt://gobblin/templates/gobblin_pull.conf.tpl
+    - name: /etc/init/gobblin.conf
+    - source: salt://gobblin/templates/gobblin.conf.tpl
 {% elif grains['os'] in ('RedHat', 'CentOS') %}
-    - name: /usr/lib/systemd/system/gobblin_pull.service
-    - source: salt://gobblin/templates/gobblin_pull.service.tpl
+    - name: /usr/lib/systemd/system/gobblin.service
+    - source: salt://gobblin/templates/gobblin.service.tpl
 {%- endif %}
     - template: jinja
     - context:
@@ -143,25 +143,6 @@ gobblin-install_gobblin_pull_service_script:
       gobblin_work_dir: {{ gobblin_hdfs_work_dir }}
       gobblin_job_file: {{ gobblin_link_dir }}/configs/mr.pull
       hadoop_home_bin: {{ hadoop_home_bin }}
-      
-{% if perform_compaction %}
-gobblin-install_gobblin_compact_service_script:
-  file.managed:
-{% if grains['os'] == 'Ubuntu' %}
-    - name: /etc/init/gobblin_compact.conf
-    - source: salt://gobblin/templates/gobblin_compact.conf.tpl
-{% elif grains['os'] in ('RedHat', 'CentOS') %}
-    - name: /usr/lib/systemd/system/gobblin_compact.service
-    - source: salt://gobblin/templates/gobblin_compact.service.tpl
-{%- endif %}
-    - template: jinja
-    - context:
-      gobblin_directory_name: {{ gobblin_link_dir }}/gobblin-dist
-      gobblin_user: {{ pnda_user }}
-      gobblin_work_dir: {{ gobblin_hdfs_work_dir }}
-      gobblin_job_file: {{ gobblin_link_dir }}/configs/mr.compact
-      hadoop_home_bin: {{ hadoop_home_bin }}
-{%- endif %}
 
 {% if perform_compaction %}
 gobblin-install_gobblin_compact_service_script:
@@ -188,13 +169,13 @@ gobblin-systemctl_reload:
     - name: /bin/systemctl daemon-reload
 {%- endif %}
 
-gobblin-add_gobblin_pull_crontab_entry:
+gobblin-add_gobblin_crontab_entry:
   cron.present:
-    - identifier: GOBBLIN_PULL
+    - identifier: GOBBLIN
 {% if grains['os'] == 'Ubuntu' %}
-    - name: /sbin/start gobblin_pull
+    - name: /sbin/start gobblin
 {% elif grains['os'] in ('RedHat', 'CentOS') %}
-    - name: /bin/systemctl start gobblin_pull
+    - name: /bin/systemctl start gobblin
 {%- endif %}
     - user: root
     - minute: 0,30
