@@ -1,7 +1,7 @@
 {% set flavor_cfg = pillar['pnda_flavor']['states'][sls] %}
 
 {% set packages_server = pillar['packages_server']['base_uri'] %}
-{% set gobblin_version = pillar['gobblin']['release_version'] %}
+{% set gobblin_version = 'develop' %}
 {% set gobblin_package = 'gobblin-distribution-' + gobblin_version + '.tar.gz' %}
 
 {% set pnda_home = pillar['pnda']['homedir'] %}
@@ -36,7 +36,7 @@
 {% set hadoop_home_bin = '/usr/hdp/current/hadoop-client/bin/' %}
 {% else %}
 {% set hadoop_home_bin = '/opt/cloudera/parcels/CDH/bin' %}
-{% endif %}
+{%- endif %}
 
 gobblin-create_gobblin_version_directory:
   file.directory:
@@ -69,6 +69,14 @@ gobblin-update_gobblin_reference_configuration_file:
     - require:
       - archive: gobblin-dl-and-extract
 
+gobblin-update_gobblin_mapreduce_sh_file:
+  file.replace:
+    - name: {{ gobblin_real_dir }}/gobblin-dist/bin/gobblin-mapreduce.sh
+    - pattern: 'data-2.6.0.jar'
+    - repl: 'data-11.0.0.jar'
+    - require:
+      - archive: gobblin-dl-and-extract
+
 gobblin-create_gobblin_jobs_directory:
   file.directory:
     - name: {{ gobblin_link_dir }}/configs
@@ -81,7 +89,7 @@ gobblin-install_gobblin_pnda_job_file:
     - template: jinja
     - context:
       namenode: {{ namenode }}
-      kite_dataset_uri: {{ pnda_kite_dataset_uri }}
+      kite_dataset_uri: {{ pnda_primary_dataset_uri }}
       quarantine_kite_dataset_uri: {{ pnda_quarantine_kite_dataset_uri }}
       kafka_brokers: {{ kafka_brokers }}
       max_mappers: {{ flavor_cfg.max_mappers }}
@@ -108,6 +116,13 @@ gobblin-create_gobblin_logs_directory:
     - name: /var/log/pnda/gobblin
     - user: {{ pnda_user }}
     - makedirs: True
+
+gobblin-create_gobblin_logs_file:
+  file.managed:
+    - name: /var/log/pnda/gobblin/gobblin-current.log
+    - user: pnda
+    - group: pnda
+    - mode: 0644
 
 gobblin-install_gobblin_service_script:
   file.managed:
