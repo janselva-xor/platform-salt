@@ -23,7 +23,6 @@
 {% set pnda_quarantine_kite_dataset_uri = "dataset:" + namenode + pnda_quarantine_dataset_location %}
 
 {% set pnda_compacted_dataset_location = pillar['pnda']['master_dataset']['compaction_directory'] %}
-{% set pnda_kite_compacted_dataset_uri = "dataset:" + namenode + pnda_compacted_dataset_location %}
 {% set perform_compaction = salt['pillar.get']('dataset_compaction:compaction', False) %}
 
 {% if perform_compaction %}
@@ -89,7 +88,7 @@ gobblin-install_gobblin_pnda_job_file:
     - template: jinja
     - context:
       namenode: {{ namenode }}
-      kite_dataset_uri: {{ pnda_primary_dataset_uri }}
+      kite_dataset_uri: {{ pnda_kite_dataset_uri }}
       quarantine_kite_dataset_uri: {{ pnda_quarantine_kite_dataset_uri }}
       kafka_brokers: {{ kafka_brokers }}
       max_mappers: {{ flavor_cfg.max_mappers }}
